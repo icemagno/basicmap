@@ -83,13 +83,18 @@ Um projeto básico de geoportal, contendo as seguintes funcionalidades:
 	onde a aeronave é plotada no mapa. Use-o como molde para sua finalidade própra ou apague 
 	os arquivos referidos de teste se não precisar.
 	
+
+7)	Você precisará de um banco de dados. Use o Script "deploy-a-database.sh" para criar um.
 	
-	
-	
-		
-		
-	
-		
+	- Examine o interior do arquivo para detalhes como usuário, senha, nome do banco, conteiner
+		e porta.
+
+8) IMPORTANTE! Verifique o arquivo application.properties para detalhes sobre as configurações.
+		---------------------------------------------------------------------------------
+		SEM ALTERAR ESTE ARQUIVO NÃO SERÁ POSSÍVEL EXECUTAR O SISTEMA DIRETO SEM O DOCKER
+		---------------------------------------------------------------------------------
+
+9) Faça deploy do sistema no Docker usando o script "deploy.sh".		
 	
 		
 		
