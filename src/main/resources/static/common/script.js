@@ -6,22 +6,79 @@ var north = 5.36;
 var homeLocation = Cesium.Rectangle.fromDegrees(west, south, east, north);
 var mainEventHandler = null;
 
+var baseOsmProvider;
+var map01;
+var map02;
+var map03;
+
+
+
 $( document ).ready(function() {
 	initMap();
 	mainEventHandler = new Cesium.ScreenSpaceEventHandler( scene.canvas );
 	bindInterfaceElements();
 	addMouseHoverListener();
+	connectWs();
 });
 
 
+function connectWs() {
+	const ws2 = new SockJS( '/ws' );
+	var stompClient = Stomp.over(ws2);
+    stompClient.debug = () => {};
+    stompClient.connect({}, (frame) => {
+    	
+      	stompClient.subscribe('/ping', (message) => {
+      		console.log("PING RECEIVED!");
+      	});
+
+      	stompClient.subscribe('/main_channel', (message) => {
+      		if(message.body) {
+      			var payload = JSON.parse(message.body);
+      			console.log( payload );
+      		}
+      	});      	
+      	
+      	
+		setInterval( () => {
+			var data = { "test": Date.now() }
+			stompClient.send("/ping", {priority: 0}, JSON.stringify(data) );
+		}, 3000 );       	
+      
+      	
+	});
+    
+    
+    
+}
+
+function baseLayer( provider ){
+	var layers = viewer.imageryLayers;
+	var baseLayer = layers.get(0);
+	layers.remove(baseLayer);
+	layers.addImageryProvider(provider);	
+}
+
 function initMap(){
 
-		var baseOsmProvider = new Cesium.OpenStreetMapImageryProvider({
+		baseOsmProvider = new Cesium.OpenStreetMapImageryProvider({
 		    url : 'https://a.tile.openstreetmap.org/'
 		});
 			
+		map01 = new Cesium.UrlTemplateImageryProvider({
+		    url : 'https://stamen-tiles-d.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png',
+		});	
+			
+		map02 = new Cesium.UrlTemplateImageryProvider({
+		    url : 'http://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+		});	
+
+		map03 = new Cesium.UrlTemplateImageryProvider({
+		    url : 'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
+		});	
+		
 		viewer = new Cesium.Viewer('cesiumContainer',{
-			sceneMode : Cesium.SceneMode.SCENE2D,
+			sceneMode : Cesium.SceneMode.SCENE3D,
 			timeline: false,
 			animation: false,
 			baseLayerPicker: false,
@@ -31,7 +88,7 @@ function initMap(){
 			homeButton : false,
 			infoBox : false,
 			skyBox : false,
-			sceneModePicker : false,
+			sceneModePicker : true,
 			selectionIndicator : false,
 			navigationHelpButton : false,
 		    imageryProvider: baseOsmProvider,
@@ -95,32 +152,41 @@ function initMap(){
 		});			
 		
 		
-		/*
-		var promise = Cesium.GeoJsonDataSource.load( "/calisto/sentinel/polygonized.geojson", {
-			clampToGround: false,
-	        stroke: Cesium.Color.fromBytes(255, 0, 0, 254),
-	        fill: Cesium.Color.RED,
-	        strokeWidth: 2,	
-	   	});
-		promise.then(function(dataSource) {
-			var entities = dataSource.entities.values;
-			for (var i = 0; i < entities.length; i++) {
-				var entity = entities[i];
-				var entityPosition = entity.polygon.hierarchy._value.positions[0];
-				putMarker( entityPosition, "fire.png" )
-				entity.name = 'FIRE';
-			    viewer.entities.add( entity );
-			    scene.requestRender();
-			}	
-		});
-		*/
-			
 };
 
 function bindInterfaceElements() {
     $(".cesium-viewer-bottom").hide();
     $(".cesium-viewer-navigationContainer").hide();
     $(".navigation-controls").hide();
+    
+    $("#optionsRadios1").click( function(){
+		baseLayer(baseOsmProvider);
+	});
+    
+    $("#optionsRadios2").click( function(){
+		baseLayer(map03);
+	});
+
+    $("#optionsRadios3").click( function(){
+		baseLayer(map01);
+	});
+
+    $("#optionsRadios4").click( function(){
+		baseLayer(map02);
+	});
+    
+    $("#btn01").click( function(){
+		console.log("Botão 01");
+	});
+
+    $("#btn02").click( function(){
+		console.log("Botão 02");
+	});
+
+    $("#btn03").click( function(){
+		console.log("Botão 03");
+	});
+
 };
 
 
@@ -135,7 +201,7 @@ function addMouseHoverListener() {
 			const pickedObject = this.viewer.scene.pick( movement.endPosition );
 		    if ( Cesium.defined( pickedObject ) ) {
 				const entity = pickedObject.id;
-				if( entity.name == 'IMAGE' )  $('#cesiumContainer').css('cursor','pointer');
+				// if( entity )  $('#cesiumContainer').css('cursor','pointer');
 			}
 		} catch ( err ) {
 			console.log( err );

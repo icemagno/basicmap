@@ -1,8 +1,5 @@
 package br.com.cmabreu.controller;
 
-import java.util.UUID;
-
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -62,12 +59,14 @@ public class UserController {
 	}		
 
    
+	
     @GetMapping(value = "/whoami", produces=MediaType.APPLICATION_JSON_VALUE )
     public @ResponseBody UserDTO whoami( UsernamePasswordAuthenticationToken principal ) {
     	CustomUserDetails details = (CustomUserDetails)principal.getPrincipal();
     	User user = details.getUser();
         return new UserDTO( user );
-    }			
+    }
+    			
 
     
    

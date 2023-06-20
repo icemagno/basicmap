@@ -46,7 +46,7 @@ public class UserService extends DefaultOAuth2UserService implements UserDetails
     	try {
     		User system = getSystem();
     		if( system == null ) {
-    			addUser( "antares2" , "ADMIN", "admin@cmabreu.com.br", Provider.LOCAL);
+    			addUser( "senhainicial" , "ADMIN", "admin@cmabreu.com.br", Provider.LOCAL);
     			logger.info("System credentials created and loaded.");
     		} else logger.info("System credentials loaded.");
     	} catch ( Exception e ) {

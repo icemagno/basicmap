@@ -1,0 +1,34 @@
+O que é este repositório?
+----------------------------
+
+Um projeto básico de geoportal, contendo as seguintes funcionalidades:
+
+1) Login de usuário administrador, mas sem CRUD de usuários.
+
+	- O usuário de login é admin@cmabreu.com.br, com a senha "senhapadrao".
+	- Você encontrará a criação do usuário de login no arquivo UserService, 
+		no pacote "services".
+	- Altere-o ANTES de rodar o sistema pela primeira vez, ou precisará 
+		alterar direto no banco depois (não há CRUD).
+		
+2) Um mapa básico Cesium, com a configuração inicial para visão 3D, mas com 
+	o seletor de visão no canto superior direito.
+	
+3) Dois painéis retráteis laterais, o da esqueda vazio e o da direita 
+	com algumas configurações de exemplo.
+	
+	- Todo HTML reside na pasta src/main/resource/templates
+	- O HTML é modularizado pelo Thymeleaf.
+	- O painel esquerdo está no arquivo "sidebar.html" e o painel direito está no
+		arquivo "controlsidebar.html"
+	- O título da página está no arquivo "head.html"
+	- A tela de login é "loginForm.html". Lá poderá alterar ou retirar o logotipo.
+	- O menu suspenso do usuário está no arquivo "userdropdown.html"
+	- A barra superior está no arquivo "navbar.html" 
+	
+	
+		
+		
+
+
+
