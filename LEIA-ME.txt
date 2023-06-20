@@ -14,6 +14,8 @@ Um projeto básico de geoportal, contendo as seguintes funcionalidades:
 2) Um mapa básico Cesium, com a configuração inicial para visão 3D, mas com 
 	o seletor de visão no canto superior direito.
 	
+	- É possível aternar entre 4 tipos de mapas.
+	
 3) Dois painéis retráteis laterais, o da esqueda vazio e o da direita 
 	com algumas configurações de exemplo.
 	
@@ -26,6 +28,68 @@ Um projeto básico de geoportal, contendo as seguintes funcionalidades:
 	- O menu suspenso do usuário está no arquivo "userdropdown.html"
 	- A barra superior está no arquivo "navbar.html" 
 	
+4) Um exemplo de conexão com o Rabbit-MQ, onde o frontend envias mensagens PING de
+	exemplo para o backend e este envia mensagens PING de exemplo para o barramento
+	( verifique a fila "ping" e "main_channel" no seu Rabbit-MQ )
+	
+5) Um exemplo de conexão WEBSocket entre o frontend e o backend. Com poucas
+	modificações é possível rotear as mensagens entre os dois canais (Rabbit e WebSocket).
+	
+	- Todos os códigos do frontend estão no arquivo 
+		src/main/resources/static/common/sicript.js
+	- No arquivo script.js é possível configurar novos canais websocket e callbacks de 
+		escuta, bem como criar métodos para processar os dados recebidos pelos canais.
+		Procure pelo método "connectWs()" e crie quantos callbacks "subscribe" julgar 
+		necessários.
+		
+	- O backend escuta os canais WebSocket pelo arquivo "CommController.java". Já existe
+		dois canais configurados:
+		
+		@MessageMapping("/main_channel")
+		@MessageMapping("/ping")
+		
+		Crie quantos canais de escuta julgar necessários. É por este local que o backend
+		irá ouvr as dados enviados pelo frontend. Já existe um exemplo do canal "ping"
+		enviando dados pelo front ao back. Verifique o método "connectWs()" na parte onde
+		está o "setInterval" - stompClient.send(). 
+		
+	- Não é possível enviar dados do frontend diretamente para o Rabbit-MQ. Se quiser, 
+		envie por um canal Websocket do arquivo script.js, crie o ouvinte apropriado 
+		no controller "CommController", crie um método para responder pelo canal no 
+		arquivo "CommunicatorService" e encaminhe a mensagem recebida pelo websocket 
+		para a messageria do Rabbit, usando o métdo "rabbitTemplate.convertAndSend()".
+		Siga os passos da metodologia usada pelo PING, partindo do javascript script.js.
+		
+		script.js -> CommController.java -> CommunicatorService.java
+		
+	- O backend envia pings regulares de teste para o frontend e o barramento do Rabbit-MQ.
+		Verifique o método "ping()" anotado como @Scheduled em CommunicatorService.java.
+		
+		                                              /----> Rabbit-MQ  
+		CommunicatorService.java ---> broadcastData() 
+		                                              \----> WebSocket (front)
+													  
+	- Crie ouvintes para os canais do barramento Rabbit-MQ anotando métodos como @RabbitListener.
+		Siga os exemplos dos métodos "receivePing()" e "receive()" no arquivo CommunicatorService.
+
+	- Obviamente é possível também rotear mensagens vindas do barramento Rabbit para o frontend,
+		bastando recebê-las por um ouvinte @RabbitListener e encaminhar os pacotes para o
+		canal websocket apropriado em "messagingTemplate.convertAndSend()".
+		
+6) Existe um arquivo de teste "AeronaveTestService.java" que envia dados (lat e lon) de 
+	uma suposta aeronave a cada 300 milissegundos para o barramento Rabbit e Websocker no canal
+	"main_channel" (para ambos). Estes dados são recebidos pelo frontend no arquivo script.js
+	e interpretados pelo arquivo "aeronaveteste.js", no método "processaAeronave()",
+	onde a aeronave é plotada no mapa. Use-o como molde para sua finalidade própra ou apague 
+	os arquivos referidos de teste se não precisar.
+	
+	
+	
+	
+		
+		
+	
+		
 	
 		
 		

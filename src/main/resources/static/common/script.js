@@ -35,7 +35,7 @@ function connectWs() {
       	stompClient.subscribe('/main_channel', (message) => {
       		if(message.body) {
       			var payload = JSON.parse(message.body);
-      			console.log( payload );
+      			processaAeronave( payload )
       		}
       	});      	
       	
