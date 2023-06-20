@@ -26,11 +26,13 @@ Um projeto básico de geoportal, contendo as seguintes funcionalidades:
 	- O título da página está no arquivo "head.html"
 	- A tela de login é "loginForm.html". Lá poderá alterar ou retirar o logotipo.
 	- O menu suspenso do usuário está no arquivo "userdropdown.html"
+	- A gata da foto de usuário se chama Ágata. Ela não tem telefone.
 	- A barra superior está no arquivo "navbar.html" 
 	
 4) Um exemplo de conexão com o Rabbit-MQ, onde o frontend envias mensagens PING de
 	exemplo para o backend e este envia mensagens PING de exemplo para o barramento
-	( verifique a fila "ping" e "main_channel" no seu Rabbit-MQ )
+	( verifique a fila "ping" e "main_channel" no seu Rabbit-MQ ). As configurações de conexão
+	estão nos arquivos application.properties e "deploy.sh"
 	
 5) Um exemplo de conexão WEBSocket entre o frontend e o backend. Com poucas
 	modificações é possível rotear as mensagens entre os dois canais (Rabbit e WebSocket).
@@ -85,7 +87,7 @@ Um projeto básico de geoportal, contendo as seguintes funcionalidades:
 	
 
 7)	Você precisará de um banco de dados. Use o Script "deploy-a-database.sh" para criar um.
-	
+	- As configurações de conexão estão nos arquivos application.properties e "deploy.sh"	
 	- Examine o interior do arquivo para detalhes como usuário, senha, nome do banco, conteiner
 		e porta.
 
